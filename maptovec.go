@@ -8,24 +8,19 @@ type Map map[string]interface{}
 // Vec is a vector of real numbers
 type Vec []float64
 
-// Index is a mapping from (any) to float
-type Index map[interface{}]float64
-
-// NewIndex makes and returns a new Index
-func NewIndex() Index {
-	return make(Index)
-}
+// index is a mapping from (any) to float
+type index map[interface{}]float64
 
 // Vectorizer is a utility for converting Maps to Vecs
 type Vectorizer struct {
-	indexes map[string]Index
+	indexes map[string]index
 	nextIDs map[string]float64
 }
 
 // NewVectorizer creates and returns a new Vectorizer
 func NewVectorizer() *Vectorizer {
 	vectorizer := &Vectorizer{}
-	vectorizer.indexes = make(map[string]Index)
+	vectorizer.indexes = make(map[string]index)
 	vectorizer.nextIDs = make(map[string]float64)
 	return vectorizer
 }
@@ -41,7 +36,7 @@ func (vectorizer *Vectorizer) indexMap(src Map) {
 	for _, key := range src.orderedKeys() {
 		elem := src[key]
 		if vectorizer.indexes[key] == nil {
-			vectorizer.indexes[key] = NewIndex()
+			vectorizer.indexes[key] = index{}
 		}
 		if vectorizer.indexes[key][elem] == 0 {
 			vectorizer.indexes[key][elem] = vectorizer.nextID(key)
